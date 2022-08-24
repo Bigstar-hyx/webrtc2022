@@ -1,30 +1,29 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <div>
+    <a-layout>
+      <a-layout-header>
+        <WebNavTop />
+      </a-layout-header>
+      <a-layout-content>
+        <router-view />
+      </a-layout-content>
+      <a-layout-footer style="text-align: center">Live System ©2022 Created by Bigstar</a-layout-footer>
+    </a-layout>
+  </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+<script>
+import WebNavTop from './components/webNav/webNavTop.vue';
+export default {
+  components: {
+    WebNavTop
   }
+};
+</script>
+
+<style scoped>
+.ant-layout-header {
+  height: 50px;
+  padding: 0;
 }
 </style>

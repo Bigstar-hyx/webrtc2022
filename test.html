@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BFC实践</title>
+    <style>
+      .box1,
+      .box2 {
+        /* float: left; */
+        margin: 100px;
+        width: 200px;
+        height: 200px;
+        background-color: #fff;
+      }
+      .box2 {
+      }
+      .container1 {
+        /* margin: 10px auto;
+        width: 1000px;
+        height: 500px; */
+        display: inline-block;
+        background-color: pink;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container1">
+      使用Float脱离文档流，高度塌陷
+      <div class="box1">第一个盒子</div>
+      <div class="box2">第二个盒子</div>
+    </div>
+
+    <div></div>
+
+    <div></div>
+  </body>
+</html>
