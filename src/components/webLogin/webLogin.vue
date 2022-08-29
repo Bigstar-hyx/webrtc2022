@@ -1,7 +1,7 @@
 <template>
   <div class="web-login">
     <div>
-      <a-tabs v-model:activeKey="activeKey" centered="ture">
+      <a-tabs v-model:activeKey="activeKey" centered>
         <a-tab-pane key="1" tab="密码登录">
           <div class="web-login-pw web-login-account">
             <span class="span-one">账号</span>
@@ -50,14 +50,16 @@ export default defineComponent({
     DownOutlined
   },
   setup() {
+    let activeKey = ref('1');
     let btnSmsValue = ref('获取验证码');
     let btnSms = false;
     return {
-      activeKey: ref('1'),
       btnSmsValue,
-      btnSms
+      btnSms,
+      activeKey
     };
   },
+
   data() {
     return {
       loginZH: '',
@@ -67,30 +69,33 @@ export default defineComponent({
     };
   },
   methods: {
-    // 需实现跳转至注册页面
+    // 注册
     btnRegOne() {
-      // return { activeKey: ref('1') };
+      this.activeKey = '2';
     },
-
     // 登录
     btnLogin() {
-      axios({
-        method: 'post',
-        url: '/api/v1/live/login',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        data: {
-          account: this.loginZH, // 账号或者手机号，必填
-          authKey: this.loginPass, // 密码或者验证码，必填
-          codeLogin: false // 是否验证码登录，必填
-        }
-      })
-        .then(function (response) {
-          console.log('登录：', response.data);
+      if (!this.loginZH || !this.loginPass) {
+        this.$message.error('账号或密码不能为空！');
+        return;
+      }
+      let params = {
+        account: this.loginZH, // 账号或者手机号，必填
+        authKey: this.loginPass, // 密码或者验证码，必填
+        codeLogin: false // 是否验证码登录，必填
+      };
+      this.$post(this.API.POST_LOGIN, params)
+        .then(res => {
+          console.log('登录成功：', res.data);
+          // 存入 token
+          this.$store.commit('setToken', res.data.data.token);
+          // 设置 cookies
+          this.$cookies.set('token', res.data.data.token);
+          // 登录成功刷新当前页面
+          this.$router.go(0);
         })
-        .catch(function (error) {
-          console.log('登录：', error);
+        .catch(err => {
+          console.log('登录err', err);
         });
     },
 
@@ -111,7 +116,7 @@ export default defineComponent({
               this.btnSms = true;
               this.btnSms = 'pointer-events:none';
               let countdown = setInterval(() => {
-                this.btnSmsValue = count + 's后可重新获取';
+                this.btnSmsValue = count + 's后重新获取';
                 if (count === 0) {
                   this.btnSmsValue = '获取短信验证码';
                   this.btnSms = false;
@@ -121,14 +126,14 @@ export default defineComponent({
               }, 1000);
             }
           })
-          .catch(function (error) {
-            console.log('获取验证码 error：', error);
+          .catch(err => {
+            console.log('获取验证码err', err);
           });
       } else {
         this.$message.error('请先填写正确的手机号码！');
       }
     },
-    // 注册tab下'注册/登录'按钮, 此处应该再验证手机号码是否已注册（是 - 登录接口；否 - 注册接口）
+    // 注册/登录
     btnReg() {
       if (this.phoneNumer.length !== 11) {
         this.$message.error('请填写正确的手机号码！');
@@ -138,23 +143,24 @@ export default defineComponent({
         return;
       }
       let params = {
-        mobile: this.phoneNumer, // 手机号，必填
-        code: this.phoneCode // 短信验证码
+        account: this.phoneNumer, // 手机号，必填
+        authKey: this.phoneCode, // 短信验证码
+        codeLogin: true // 是否验证码登录，必填
       };
-      this.$post(this.API.POST_REGISTER, params)
+      this.$post(this.API.POST_LOGIN, params)
         .then(res => {
           console.log('注册/登录成功：', res.data);
           // 存入 token
           this.$store.commit('setToken', res.data.data.token);
           // 设置 cookies
           this.$cookies.set('token', res.data.data.token);
-          let value = this.$cookies.get('token');
-          console.log('cookie get: ' + value);
+          // let value = this.$cookies.get('token');
+          // console.log('cookie get: ' + value);
           // 登录成功刷新当前页面
-          // this.$router.go(0);
+          this.$router.go(0);
         })
-        .catch(error => {
-          console.log('注册/登录失败：', error);
+        .catch(err => {
+          console.log('注册/登录：', err);
         });
     }
   }

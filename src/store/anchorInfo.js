@@ -1,10 +1,10 @@
 const state = {
-  token: 'default'
+  anchor: false
 }
 
 const mutations = {
-  setToken(state, index) {
-    state.token = index
+  setAnchor(state, index) {
+    state.anchor = index
     // console.log('store-token', state.token)
   }
 }

@@ -1,10 +1,14 @@
 const API = {
   // 登录
   POST_LOGIN: '/api/v1/live/login',
-  // 注册
-  POST_REGISTER: '/api/v1/live/register',
   // 发送短信验证码
-  GET_SEND_SMS: '/api/v1/live/code/send'
+  GET_SEND_SMS: '/api/v1/live/code/send',
+  // 退出登录
+  POST_LOGOUT: '/api/v1/live/logout',
+  // 获取用户个人信息
+  GET_CURRENT_USER: '/api/v1/live/account/info/currentUser',
+  // 获取推荐直播信息
+  GET_HOT_LIVE: '/api/v1/live/account/info/hotLive'
 }
 
 export default API
