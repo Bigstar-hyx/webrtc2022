@@ -13,22 +13,77 @@
     </div>
     <div class="viewer-send">
       <div>
-        <input v-model="chatInput" class="viewer-send-input" placeholder="发个弹幕呗～(☆▽☆)" @keyup.enter="handleSend" />
-        <button @click="chatSend" class="viewer-send-bun">发送</button>
+        <input v-model="chatInput" class="viewer-send-input" :placeholder="danmuMsg" @keyup.enter="handleSend" />
+        <template v-if="!danmuIsLogin">
+          <button class="viewer-send-bun" @click="showModal">登录</button>
+          <a-modal v-model:visible="visible" footer width="500px" style="top: 170px" @ok="handleOk">
+            <a-spin :spinning="spinning" size="large">
+              <WebLogin />
+            </a-spin>
+          </a-modal>
+        </template>
+        <button v-else @click="chatSend" class="viewer-send-bun">发送</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import WebLogin from '../webLogin/webLogin.vue';
+import { ref } from 'vue';
 export default {
   name: 'WebOtherTalk',
+  components: {
+    WebLogin
+  },
+
+  setup() {
+    const visible = ref(false);
+
+    const showModal = () => {
+      visible.value = true;
+    };
+
+    const handleOk = e => {
+      console.log(e);
+      visible.value = false;
+    };
+
+    return {
+      visible,
+      showModal,
+      handleOk
+    };
+  },
+  computed: {
+    spinning() {
+      return this.$store.state.pageInfo.loading;
+    }
+  },
   data() {
     return {
-      chatInput: ''
+      chatInput: '',
+      danmuMsg: '主播：快来发表评论吧～凸^-^凸～',
+      danmuIsLogin: false
     };
   },
   methods: {
+    // 更改主播状态
+    setAnchorInfo() {
+      this.$store.state.anchorInfo.anchor = true;
+    },
+    // 讨论区验证是否登录
+    getIsLogin() {
+      let token = this.$cookies.get('token');
+      // let token = this.$store.state.userInfo.token;
+      if (token) {
+        this.danmuMsg = '发个弹幕呗～(☆▽☆)';
+        this.danmuIsLogin = true;
+      } else {
+        this.danmuMsg = '主播：登录后才可以发表评论哦～';
+        this.danmuIsLogin = false;
+      }
+    },
     // 点击发送按钮，将input中的内容发送至服务端
     chatSend() {
       this.$socket.emit('chat message', this.chatInput);
@@ -52,6 +107,10 @@ export default {
         console.log(para);
       });
     }
+  },
+  mounted() {
+    this.getIsLogin();
+    this.setAnchorInfo();
   }
 };
 </script>

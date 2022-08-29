@@ -9,7 +9,7 @@
 
 <script>
 import LiveTool from './liveTool.vue';
-import { gotDevices } from '@/assets/js/client.js';
+// import { gotDevices } from '@/assets/js/client.js';
 
 export default {
   name: 'LiveUp',
@@ -17,9 +17,7 @@ export default {
     LiveTool
   },
   methods: {
-    methods1: function () {
-      gotDevices();
-    }
+    // gotDevices
   }
 };
 </script>

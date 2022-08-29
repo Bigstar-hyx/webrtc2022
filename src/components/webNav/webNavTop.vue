@@ -1,44 +1,44 @@
 <template>
   <div class="header">
     <div class="logo">
-      <a href="/">
+      <router-link to="/">
         <play-square-two-tone />&nbsp;Bigstar
-      </a>
+      </router-link>
     </div>
     <div class="top-menu">
       <ul>
         <li>
-          <a href="/viewer">直播</a>
+          <router-link to="/viewer?type=live">直播</router-link>
         </li>
         <li>
-          <a href="/viewer">全部</a>
+          <router-link to="/viewer?type=all">全部</router-link>
         </li>
         <li>
-          <a href="/viewer">网游</a>
+          <router-link to="/viewer?type=online-game">网游</router-link>
         </li>
         <li>
-          <a href="/viewer">手游</a>
+          <router-link to="/viewer?type=phone-game">手游</router-link>
         </li>
         <li>
-          <a href="/viewer">单机游戏</a>
+          <router-link to="/viewer?type=single-game">单机游戏</router-link>
         </li>
         <li>
-          <a href="/viewer">娱乐</a>
+          <router-link to="/viewer?type=entertainment">娱乐</router-link>
         </li>
         <li>
-          <a href="/viewer">电台</a>
+          <router-link to="/viewer?type=radio">电台</router-link>
         </li>
         <li>
-          <a href="/viewer">虚拟主播</a>
+          <router-link to="/viewer?type=VTuber">虚拟主播</router-link>
         </li>
         <li>
-          <a href="/viewer">生活</a>
+          <router-link to="/viewer?type=life">生活</router-link>
         </li>
         <li>
-          <a href>学习</a>
+          <router-link to="/viewer?type=study">学习</router-link>
         </li>
         <li>
-          <a href="/viewer">赛事</a>
+          <router-link to="/viewer?type=Competition">赛事</router-link>
         </li>
       </ul>
     </div>
@@ -53,36 +53,47 @@
     <div class="avatar" v-if="!isLogin">
       <a-button type="primary" shape="circle" @click="showModal">登录</a-button>
       <a-modal v-model:visible="visible" footer width="500px" style="top: 170px" @ok="handleOk">
-        <WebLogin />
+        <a-spin :spinning="spinning" size="large">
+          <WebLogin />
+        </a-spin>
       </a-modal>
     </div>
     <!-- 登录状态 -->
     <div class="avatar" v-else>
-      <a href="/user">
+      <a-popover>
+        <template #content>
+          <p>{{nickname}}</p>
+          <p>
+            <router-link to="/user">个人中心</router-link>
+          </p>
+          <p>
+            <a @click="logout">退出登录</a>
+          </p>
+        </template>
         <a-button type="primary" shape="circle">
           <template #icon>
             <UserOutlined />
           </template>
         </a-button>
-      </a>
+      </a-popover>
     </div>
     <div class="top-start">
       <ul>
         <li>
-          <a href>动态</a>
+          <a>动态</a>
         </li>
         <li>
-          <a href>签到</a>
+          <a>签到</a>
         </li>
-        <li>
-          <a href="/liver">
+        <li v-if="!isAnchor">
+          <router-link to="/liver">
             <a-button type="primary" shape="round">
               <template #icon>
                 <PlayCircleOutlined />
               </template>
               我要开播
             </a-button>
-          </a>
+          </router-link>
         </li>
       </ul>
     </div>
@@ -105,8 +116,17 @@ export default defineComponent({
   },
   data() {
     return {
-      isLogin: false
+      isLogin: false,
+      nickname: '默认昵称'
     };
+  },
+  computed: {
+    spinning() {
+      return this.$store.state.pageInfo.loading;
+    },
+    isAnchor() {
+      return this.$store.state.anchorInfo.anchor;
+    }
   },
   setup() {
     const visible = ref(false);
@@ -126,33 +146,39 @@ export default defineComponent({
       handleOk
     };
   },
-  // computed: {
-  //   token() {
-  //     return this.$store.state.userInfo.token;
-  //   }
-  // },
-  // watch: {
-  //   token(newVal, oldVal) {
-  //     this.getIsLogin();
-  //   }
-  // },
   methods: {
+    // 退出登录
+    logout() {
+      this.$post(this.API.POST_LOGOUT)
+        .then(res => {
+          console.log('退出登录：', res.data);
+          this.$cookies.remove('token');
+          this.$router.go(0);
+        })
+        .catch(err => {
+          console.log('退出登录err', err);
+        });
+    },
     // 判断用户是否登录
     getIsLogin() {
       let token = this.$cookies.get('token');
-      // let token = this.token;
-      console.log('token', token);
+      // let token = this.$store.state.userInfo.token;
       if (token) {
-        console.log('login');
         this.isLogin = true;
       } else {
-        console.log('unlogin');
         this.isLogin = false;
       }
+    },
+    // 获取用户信息
+    getCurrentUser() {
+      this.$get(this.API.GET_CURRENT_USER).then(res => {
+        this.nickname = res.data.data.nickname;
+      });
     }
   },
   mounted() {
     this.getIsLogin();
+    this.getCurrentUser();
   }
 });
 </script>
