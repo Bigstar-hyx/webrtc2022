@@ -1,5 +1,12 @@
 <template>
-  <div class="toutu">
+  <div class="toutu" v-if="isWebBanner">
+    <a-carousel class="datu" autoplay>
+      <div v-for="item in bannerInfo" :key="item.bannerId">
+        <img :src="item.bannerURL" :alt="item" />
+      </div>
+    </a-carousel>
+  </div>
+  <div class="toutu" v-else>
     <a-carousel class="datu" autoplay>
       <div>
         <img src="@/assets/img/lunbo/lunbo1.jpeg" alt="1" />
@@ -8,10 +15,10 @@
         <img src="@/assets/img/lunbo/lunbo2.webp" alt="2" />
       </div>
       <div>
-        <img src="@/assets/img/lunbo/lunbo3.webp" alt="3" />
+        <img src="@/assets/img/lunbo/lunbo4.webp" alt="3" />
       </div>
       <div>
-        <img src="@/assets/img/lunbo/lunbo4.webp" alt="4" />
+        <img src="@/assets/img/lunbo/lunbo3.webp" alt="4" />
       </div>
     </a-carousel>
   </div>
@@ -20,7 +27,32 @@
 <script>
 export default {
   name: 'WebHomeBanner',
-  components: {}
+  components: {},
+  data() {
+    return {
+      isWebBanner: true,
+      bannerInfo: []
+    };
+  },
+  methods: {
+    getWebBanner() {
+      this.$get(this.API.GET_WEB_BANNER)
+        .then(res => {
+          let arr = res.data.data;
+          if (arr.length > 0) {
+            this.bannerInfo = arr;
+            this.isWebBanner = true;
+          }
+        })
+        .catch(err => {
+          this.isWebBanner = false;
+        });
+      // console.log(this.isWebBanner);
+    }
+  },
+  mounted() {
+    this.getWebBanner();
+  }
 };
 </script>
 

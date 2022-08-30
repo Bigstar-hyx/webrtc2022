@@ -8,7 +8,9 @@ const API = {
   // 获取用户个人信息
   GET_CURRENT_USER: '/api/v1/live/account/info/currentUser',
   // 获取推荐直播信息
-  GET_HOT_LIVE: '/api/v1/live/account/info/hotLive'
+  GET_HOT_LIVE: '/api/v1/live/account/info/hotLive',
+  // 获取首页轮播图信息
+  GET_WEB_BANNER: '/api/v1/live/account/info/webBanner'
 }
 
 export default API
