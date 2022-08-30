@@ -71,8 +71,8 @@ export default {
       let params = this.$route.query.roomNo;
       this.$get(this.API.GET_ROOM_INFO, params).then(res => {
         let arr = res.data.data;
-        if (arr.length) {
-          for (let i = 0; i < 2; i++) {
+        if (arr && arr.length) {
+          for (let i = 0; i < arr.length; i++) {
             if (arr[i].roomNo === params) {
               this.roomInfo = arr[i];
             }
@@ -85,9 +85,11 @@ export default {
       let params = 'bbb';
       this.$get(this.API.GET_HOST_INFO, params).then(res => {
         let arr = res.data.data;
-        for (let i = 0; i < arr.length; i++) {
-          if (arr[i].id === params) {
-            this.hostInfo = arr[i];
+        if (arr && arr.length) {
+          for (let i = 0; i < arr.length; i++) {
+            if (arr[i].id === params) {
+              this.hostInfo = arr[i];
+            }
           }
         }
       });
