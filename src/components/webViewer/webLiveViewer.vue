@@ -4,14 +4,15 @@
       <div class="up-head"></div>
       <div class="up-headline">
         <ul class="up-headline-l">
-          <li class="up-headline-bun">直播</li>
-          <li>欢迎来到 BBBigstar 的直播间 ~~~</li>
+          <li class="up-headline-bun">{{ roomInfo.categoryName}}</li>
+          <li>{{ roomInfo.title }}</li>
         </ul>
 
         <ul class="up-headline-r">
           <li>
             <a href>
-              <EyeOutlined />&nbsp;1000人
+              <EyeOutlined />
+              &nbsp;{{ roomInfo.roomPeopleNum }}人
             </a>
           </li>
           <li>
@@ -28,13 +29,15 @@
       </div>
       <div class="up-lv">
         <ul>
-          <li class="up-lv-class">up 30</li>
-          <li>BBBigstar</li>
+          <li class="up-lv-class">up {{ hostInfo.hostGrade }}</li>
+          <li>{{ hostInfo.nickname }}</li>
           <li>
-            <StarTwoTone twoToneColor="#eb2f96" />&nbsp;1487.8 万
+            <StarTwoTone twoToneColor="#eb2f96" />
+            &nbsp;{{ hostInfo.subscribeNum }} 万
           </li>
           <li>
-            <FundTwoTone twoToneColor="green" />&nbsp; No. 1000
+            <FundTwoTone twoToneColor="green" />
+            &nbsp; No. {{ hostInfo.ranked }}
           </li>
         </ul>
       </div>
@@ -47,6 +50,7 @@
 
 <script>
 import { WarningOutlined, EyeOutlined, ShareAltOutlined, StarTwoTone, FundTwoTone } from '@ant-design/icons-vue';
+import { useRouter } from 'vue-router';
 export default {
   name: 'WebLiveViewer',
   components: {
@@ -55,6 +59,45 @@ export default {
     ShareAltOutlined,
     StarTwoTone,
     FundTwoTone
+  },
+  data() {
+    return {
+      roomInfo: [],
+      hostInfo: []
+    };
+  },
+  methods: {
+    getRoomInfo() {
+      let params = this.$route.query.roomNo;
+      this.$get(this.API.GET_ROOM_INFO, params).then(res => {
+        let arr = res.data.data;
+        if (arr && arr.length) {
+          for (let i = 0; i < arr.length; i++) {
+            if (arr[i].roomNo === params) {
+              this.roomInfo = arr[i];
+            }
+          }
+        }
+      });
+    },
+    getHostInfo() {
+      // let params = this.$route.query.id;
+      let params = 'bbb';
+      this.$get(this.API.GET_HOST_INFO, params).then(res => {
+        let arr = res.data.data;
+        if (arr && arr.length) {
+          for (let i = 0; i < arr.length; i++) {
+            if (arr[i].id === params) {
+              this.hostInfo = arr[i];
+            }
+          }
+        }
+      });
+    }
+  },
+  mounted() {
+    this.getRoomInfo();
+    this.getHostInfo();
   }
 };
 </script>
