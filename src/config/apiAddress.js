@@ -10,7 +10,11 @@ const API = {
   // 获取推荐直播信息
   GET_HOT_LIVE: '/api/v1/live/account/info/hotLive',
   // 获取首页轮播图信息
-  GET_WEB_BANNER: '/api/v1/live/account/info/webBanner'
+  GET_WEB_BANNER: '/api/v1/live/account/info/webBanner',
+  // 获取直播间信息
+  GET_ROOM_INFO: '/api/v1/live/room/info/myself/get',
+  // 获取主播信息
+  GET_HOST_INFO: '/api/v1/live/account/info/host'
 }
 
 export default API

@@ -3,7 +3,7 @@
     <h1>推荐直播</h1>
     <a-card v-for="item in hotLive" :key="item.roomNo" hoverable class="single-card">
       <template #cover>
-        <img alt="example" :src="item.cover" />
+        <img alt="example" :src="item.cover" @click="btnToView(item)" />
       </template>
       <a-card-meta :title="item.title">
         <template #description>{{ item.nickname }}</template>
@@ -53,6 +53,7 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router';
 export default {
   name: 'WebHomeCards',
   data() {
@@ -68,6 +69,16 @@ export default {
           this.hotLive = arr;
         }
         // console.log('hot', this.hotLive[1].nickname);
+      });
+    },
+    btnToView(item) {
+      // const router = useRouter();
+      this.$router.push({
+        path: '/viewer',
+        query: {
+          roomNo: item.roomNo,
+          id: item.id
+        }
       });
     }
   },

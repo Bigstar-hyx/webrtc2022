@@ -10,6 +10,8 @@ import io from 'socket.io-client'
 import { get, post } from './config/axiosConfig'
 import API from './config/apiAddress'
 import VueCookies from 'vue-cookies'
+// import { useRoute } from 'vue-router'
+// import { useRouter } from 'vue-router'
 
 // const socketio = new VueSocketIO({
 //   debug: true,
@@ -32,4 +34,6 @@ app.use(store)
 app.use(router)
 app.use(Antd)
 // app.use(socketio)
+// app.use(useRoute)
+// app.use(useRouter)
 app.mount('#app')
